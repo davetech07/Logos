@@ -4,7 +4,7 @@
 // in _layout.tsx handle the redirect to (auth) or (tabs).
 
 import { useEffect } from "react";
-import { ActivityIndicator, View } from "react-native";
+import { ActivityIndicator, Text, View } from "react-native";
 import { useTheme } from "../src/hooks/useTheme";
 import { useAuthStore } from "../src/store/auth.store";
 
@@ -26,7 +26,9 @@ export default function Index() {
         backgroundColor: theme.colors.background,
       }}
     >
-      <ActivityIndicator size="large" color={theme.colors.primary} />
+      <ActivityIndicator size="large" color={theme.colors.primaryLight} />
+
+      <Text style={{ padding: "auto", color: "white" }}> Loading...</Text>
     </View>
   );
 }
