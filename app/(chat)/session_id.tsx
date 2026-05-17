@@ -1,10 +1,10 @@
 import { View, Text } from 'react-native'
 import React from 'react'
 
-export default function books() {
+export default function session_id() {
   return (
     <View>
-      <Text>books</Text>
+      <Text>session_id</Text>
     </View>
   )
 }

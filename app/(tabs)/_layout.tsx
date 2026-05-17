@@ -1,12 +1,13 @@
 // app/(tabs)/_layout.tsx
 import { Ionicons } from "@expo/vector-icons";
+import type { ComponentProps } from "react";
 import { Tabs } from "expo-router";
 import { Platform, View } from "react-native";
 import { AppText } from "../../src/components/AppText";
 import { useAuthStore } from "../../src/store/auth.store";
 import { useThemeStore } from "../../src/store/theme.store";
 
-type IconName = React.ComponentProps<typeof Ionicons>["name"];
+type IconName = ComponentProps<typeof Ionicons>["name"];
 
 interface TabIconProps {
   name: IconName;

@@ -26,7 +26,7 @@ export default function Index() {
         backgroundColor: theme.colors.background,
       }}
     >
-      <ActivityIndicator size="large" color={theme.colors.primaryLight} />
+      <ActivityIndicator size="large" color={theme.colors.primary} />
 
       <Text style={{ padding: "auto", color: "white" }}> Loading...</Text>
     </View>

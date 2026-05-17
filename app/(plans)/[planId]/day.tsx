@@ -1,10 +1,10 @@
 import { View, Text } from 'react-native'
 import React from 'react'
 
-export default function books() {
+export default function day() {
   return (
     <View>
-      <Text>books</Text>
+      <Text>day</Text>
     </View>
   )
 }

@@ -3,18 +3,21 @@ import { useFonts } from "expo-font";
 import { Stack, router, useSegments } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
-import { StatusBar, View } from "react-native";
+import { ActivityIndicator, StatusBar, View } from "react-native";
 import { useAuthStore } from "../src/store/auth.store";
 import { useThemeStore } from "../src/store/theme.store";
-
-// Keep splash screen visible while fonts load
-SplashScreen.preventAutoHideAsync();
+import React from "react";
 
 export default function RootLayout() {
   const { theme, isDark } = useThemeStore();
   const { user, isLoading } = useAuthStore();
   const segments = useSegments();
   const c = theme.colors;
+
+  // Keep splash screen visible while fonts load
+  useEffect(() => {
+    SplashScreen.preventAutoHideAsync().catch(() => {});
+  }, []);
 
   // ── Load custom fonts (add your font files to assets/fonts/) ──────────────
   const [fontsLoaded] = useFonts({
@@ -41,7 +44,7 @@ export default function RootLayout() {
 
     if (!user && !inAuthGroup) {
       // Not logged in → send to auth
-      router.replace("/(auth)");
+      router.replace("/(auth)/login");
     } else if (user && inAuthGroup) {
       // Logged in → send to main app
       router.replace("/(tabs)");
@@ -49,7 +52,15 @@ export default function RootLayout() {
   }, [user, segments, isLoading, fontsLoaded]);
 
   // ── Don't render until fonts are loaded ──────────────────────────────────
-  if (!fontsLoaded) return null;
+  if (!fontsLoaded) {
+    return (
+      <View
+        style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+      >
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
 
   return (
     <View style={{ flex: 1, backgroundColor: c.background }}>
@@ -103,16 +114,16 @@ export default function RootLayout() {
         <Stack.Screen name="(settings)" options={{ headerShown: false }} />
 
         {/* Study plans stack */}
-        <Stack.Screen name="plans" options={{ headerShown: false }} />
+        <Stack.Screen name="(plans)" options={{ headerShown: false }} />
 
         {/* 404 fallback */}
-        <Stack.Screen
-          name="+not-found"
+        {/* <Stack.Screen
+          name="Not_Found"
           options={{
             title: "Page not found",
             headerShown: true,
           }}
-        />
+        /> */}
       </Stack>
     </View>
   );
