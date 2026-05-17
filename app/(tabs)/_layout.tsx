@@ -1,7 +1,7 @@
 // app/(tabs)/_layout.tsx
 import { Ionicons } from "@expo/vector-icons";
-import type { ComponentProps } from "react";
 import { Tabs } from "expo-router";
+import type { ComponentProps } from "react";
 import { Platform, View } from "react-native";
 import { AppText } from "../../src/components/AppText";
 import { useAuthStore } from "../../src/store/auth.store";

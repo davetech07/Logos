@@ -2,11 +2,10 @@
 import { useFonts } from "expo-font";
 import { Stack, router, useSegments } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { ActivityIndicator, StatusBar, View } from "react-native";
 import { useAuthStore } from "../src/store/auth.store";
 import { useThemeStore } from "../src/store/theme.store";
-import React from "react";
 
 export default function RootLayout() {
   const { theme, isDark } = useThemeStore();
@@ -54,9 +53,7 @@ export default function RootLayout() {
   // ── Don't render until fonts are loaded ──────────────────────────────────
   if (!fontsLoaded) {
     return (
-      <View
-        style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
-      >
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
         <ActivityIndicator size="large" />
       </View>
     );
