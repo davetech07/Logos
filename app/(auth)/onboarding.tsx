@@ -61,7 +61,7 @@ function DenomIcon({ lib, name, selected }: { lib: IconLib; name: string; select
 }
 
 // ── Main screen ───────────────────────────────────────────────────────────────
-export default function OnboardingTradition() {
+export default function Onboarding() {
   const [selected, setSelected] = useState<string>('non-denom');
 
   const [fontsLoaded] = useFonts({ Lora_700Bold, Inter_400Regular, Inter_600SemiBold });
