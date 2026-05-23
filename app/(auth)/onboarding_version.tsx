@@ -1,25 +1,23 @@
 // app/(auth)/onboarding_version.tsx
 
-import { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
-  StatusBar,
-  Platform,
-  AppRegistry,
-} from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { router, useLocalSearchParams } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
-import { useFonts, Lora_700Bold } from "@expo-google-fonts/lora";
-import { Inter_400Regular, Inter_600SemiBold } from "@expo-google-fonts/inter";
+import { AppButton } from "@/src/components/AppButton";
 import { gs } from "@/src/constants/theme";
 import { useTheme } from "@/src/hooks/useTheme";
-import { AppButton } from "@/src/components/AppButton";
-
+import { Inter_400Regular, Inter_600SemiBold } from "@expo-google-fonts/inter";
+import { Lora_700Bold, useFonts } from "@expo-google-fonts/lora";
+import { Ionicons } from "@expo/vector-icons";
+import { router, useLocalSearchParams } from "expo-router";
+import { useState } from "react";
+import {
+  Platform,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 // ── Bible version data ────────────────────────────────────────────────────────
 type BibleVersion = {
@@ -79,14 +77,14 @@ export default function OnboardingVersion() {
 
   const handleContinue = () => {
     router.push({
-      pathname: "/(auth)/onboarding-complete",
+      pathname: "/(auth)/welcome",
       params: { denomination: params.denomination, bibleVersion: selected },
     });
   };
 
   return (
     <SafeAreaView style={[gs.flex1, { backgroundColor: c.background }]}>
-       <StatusBar
+      <StatusBar
         barStyle="dark-content"
         backgroundColor={c.background}
         translucent={false}
@@ -107,7 +105,7 @@ export default function OnboardingVersion() {
         </Text>
 
         <TouchableOpacity
-          onPress={() => router.push("/(auth)/Welcome")}
+          onPress={() => router.push("/(auth)/welcome")}
           hitSlop={12}
           style={gs.rowCenter}
         >
@@ -239,7 +237,7 @@ export default function OnboardingVersion() {
         </View>
         <AppButton
           label="Continue"
-          onPress={()=> router.push({ pathname: "/(auth)/Welcome", params: { denomination: params.denomination, bibleVersion: selected } })}
+          onPress={handleContinue}
           iconRight="chevron-forward"
           fullWidth
         />
