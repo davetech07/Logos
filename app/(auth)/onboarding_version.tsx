@@ -1,167 +1,343 @@
-import { Ionicons } from "@expo/vector-icons";
-import { Badge } from "@react-navigation/elements";
-import { useRouter } from "expo-router";
+// app/(auth)/onboarding_version.tsx
+
+import { useState } from "react";
 import {
-  StatusBar,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
   View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  StatusBar,
+  Platform,
+  AppRegistry,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { router, useLocalSearchParams } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
+import { useFonts, Lora_700Bold } from "@expo-google-fonts/lora";
+import { Inter_400Regular, Inter_600SemiBold } from "@expo-google-fonts/inter";
+import { gs } from "@/src/constants/theme";
+import { useTheme } from "@/src/hooks/useTheme";
+import { AppButton } from "@/src/components/AppButton";
 
-// ── Design tokens ─────────────────────────────────────────────────────────────
-const DEEP_GREEN = "#0B3D2E";
-const GREEN_BG = "#E8F5EE";
-const GOLD = "#B8860B";
-const BG = "#F5F0E8";
-const WHITE = "#FFFFFF";
-const TEXT_PRIMARY = "#1A1A2E";
-const TEXT_MUTED = "#9CA3AF";
-const BORDER = "#E5E7EB";
-const PROGRESS_BG = "#E5E7EB";
 
-// Bible Versions
-const versions = [
+// ── Bible version data ────────────────────────────────────────────────────────
+type BibleVersion = {
+  id: string;
+  abbr: string;
+  name: string;
+  description: string;
+};
+
+const BIBLE_VERSIONS: BibleVersion[] = [
   {
     id: "niv",
-    short: "NIV",
-    title: "New International Version",
+    abbr: "NIV",
+    name: "New International Version",
     description: "Balance of accuracy and readability.",
   },
   {
     id: "esv",
-    short: "ESV",
-    title: "English Standard Version",
+    abbr: "ESV",
+    name: "English Standard Version",
     description: "Essentially literal word-for-word translation.",
   },
   {
     id: "kjv",
-    short: "KJV",
-    title: "King James Version",
-    description: "The classic, poetic English translation.",
+    abbr: "KJV",
+    name: "King James Version",
+    description: "Classic, poetic English translation.",
   },
   {
     id: "nlt",
-    short: "NLT",
-    title: "New Living Translation",
+    abbr: "NLT",
+    name: "New Living Translation",
     description: "Easy to understand, thought-for-thought.",
   },
   {
     id: "amp",
-    short: "AMP",
-    title: "Amplified Bible",
+    abbr: "AMP",
+    name: "Amplified Bible",
     description: "Captures the full meaning of word nuances.",
   },
 ];
 
-export default function onboarding_version() {
-  const router = useRouter();
+// ── Main screen ───────────────────────────────────────────────────────────────
+export default function OnboardingVersion() {
+  const [selected, setSelected] = useState<string>("niv");
+  const params = useLocalSearchParams<{ denomination: string }>();
+
+  const theme = useTheme();
+  const { colors: c, fonts: f, radius: r, spacing: sp } = theme;
+
+  const [fontsLoaded] = useFonts({
+    Lora_700Bold,
+    Inter_400Regular,
+    Inter_600SemiBold,
+  });
+  if (!fontsLoaded) return null;
+
+  const handleContinue = () => {
+    router.push({
+      pathname: "/(auth)/onboarding-complete",
+      params: { denomination: params.denomination, bibleVersion: selected },
+    });
+  };
+
   return (
-    <SafeAreaView>
-      <StatusBar barStyle="dark-content" backgroundColor={BG} />
-      <View style={Styles.topBar}>
+    <SafeAreaView style={[gs.flex1, { backgroundColor: c.background }]}>
+       <StatusBar
+        barStyle="dark-content"
+        backgroundColor={c.background}
+        translucent={false}
+      />
+
+      {/* ── Top bar ────────────────────────────────────────────────────── */}
+      <View style={[gs.rowBetween, styles.topBar]}>
         <TouchableOpacity
-          onPress={() => router.push("/(auth)/onboarding")}
-          style={Styles.backBtn}
+          onPress={() => router.back()}
+          style={styles.backBtn}
           hitSlop={12}
         >
-          <Ionicons name="arrow-back" size={22} color={TEXT_PRIMARY} />
+          <Ionicons name="arrow-back" size={22} color={c.text} />
         </TouchableOpacity>
-        <Text style={Styles.stepLabel}>Step 3 of 3</Text>
-        <TouchableOpacity onPress={() => router.push("/")} hitSlop={12}>
-          <Text style={{ fontSize: 16, color: TEXT_MUTED }}>Skip</Text>
-        </TouchableOpacity>
-      </View>
-      <View style={Styles.progressTrack}>
-        <View style={Styles.progressFill} />
-      </View>
-      <View style={Styles.body}>
-        <Text style={Styles.heading}>Choose your Bible Version</Text>
-        <Text style={Styles.subtitle}>
-          {"You can always change this later."}
+
+        <Text style={[styles.stepLabel, { fontFamily: f.bold, color: c.text }]}>
+          Step 3 of 3
         </Text>
+
+        <TouchableOpacity
+          onPress={() => router.push("/(auth)/Welcome")}
+          hitSlop={12}
+          style={gs.rowCenter}
+        >
+          <Text
+            style={[
+              styles.skipLabel,
+              { fontFamily: f.sans, color: c.textMuted },
+            ]}
+          >
+            Skip
+          </Text>
+          <Ionicons name="close" size={14} color={c.textMuted} />
+        </TouchableOpacity>
       </View>
-      <View>
-        {versions.map((version) => {
-          return (
-            <TouchableOpacity key={version.id} style={Styles.versionCard}>
-              <View style={Styles.badge}>
-                <Text>{version.short}</Text>
-              </View>
-            </TouchableOpacity>
-          );
-        })}
+
+      {/* FIX 2 — progress bar: track wraps fill, fill has explicit width */}
+      <View style={[styles.progressTrack, { backgroundColor: c.border }]}>
+        <View style={[styles.progressFill, { backgroundColor: c.primary }]} />
+      </View>
+
+      {/* ── Scrollable body ────────────────────────────────────────────── */}
+      <ScrollView
+        style={gs.flex1}
+        contentContainerStyle={[gs.px6, styles.scrollContent]}
+        showsVerticalScrollIndicator={false}
+      >
+        <Text style={[styles.heading, { fontFamily: f.bold, color: c.text }]}>
+          Choose your Bible version
+        </Text>
+
+        <Text
+          style={[
+            styles.subtitle,
+            { fontFamily: f.sans, color: c.textSecondary },
+          ]}
+        >
+          You can always change this later.
+        </Text>
+
+        <View style={styles.list}>
+          {BIBLE_VERSIONS.map((version, index) => {
+            const isSelected = selected === version.id;
+            return (
+              <TouchableOpacity
+                key={version.id}
+                activeOpacity={0.75}
+                onPress={() => setSelected(version.id)}
+                style={[
+                  styles.versionCard,
+                  {
+                    borderColor: isSelected ? c.primary : c.border,
+                    borderWidth: isSelected ? 1.5 : 1,
+                    backgroundColor: isSelected ? c.successLight : c.surface,
+                    borderRadius: r.lg,
+                  },
+                  index === BIBLE_VERSIONS.length - 1 && {
+                    marginBottom: sp["4"],
+                  },
+                ]}
+              >
+                {/* Abbr badge */}
+                <View
+                  style={[
+                    styles.abbrBadge,
+                    {
+                      backgroundColor: isSelected ? c.primary : c.successLight,
+                      borderRadius: r.sm,
+                    },
+                  ]}
+                >
+                  <Text
+                    style={[
+                      styles.abbrText,
+                      {
+                        fontFamily: f.sansSemi,
+                        color: isSelected ? c.textInverse : c.primary,
+                      },
+                    ]}
+                  >
+                    {version.abbr}
+                  </Text>
+                </View>
+
+                {/* Name + description */}
+                <View style={styles.versionInfo}>
+                  <Text
+                    style={[
+                      styles.versionName,
+                      {
+                        fontFamily: isSelected ? f.sansSemi : f.sans,
+                        color: c.text,
+                      },
+                    ]}
+                  >
+                    {version.name}
+                  </Text>
+                  <Text
+                    style={[
+                      styles.versionDesc,
+                      { fontFamily: f.sans, color: c.textSecondary },
+                    ]}
+                  >
+                    {version.description}
+                  </Text>
+                </View>
+
+                {/* Radio circle */}
+                <View
+                  style={[
+                    styles.radio,
+                    {
+                      borderColor: isSelected ? c.primary : c.border,
+                      backgroundColor: isSelected ? c.primary : "transparent",
+                    },
+                  ]}
+                >
+                  {isSelected && (
+                    <View
+                      style={[
+                        styles.radioDot,
+                        { backgroundColor: c.textInverse },
+                      ]}
+                    />
+                  )}
+                </View>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+        <AppButton
+          label="Continue"
+          onPress={()=> router.push({ pathname: "/(auth)/Welcome", params: { denomination: params.denomination, bibleVersion: selected } })}
+          iconRight="chevron-forward"
+          fullWidth
+        />
+
+        <View style={{ height: 100 }} />
+      </ScrollView>
+
+      {/* ── Footer ─────────────────────────────────────────────────────── */}
+      <View
+        style={[
+          styles.footer,
+          { backgroundColor: c.background, borderTopColor: c.border },
+        ]}
+      >
+        <Text
+          style={[
+            styles.footerNote,
+            { fontFamily: f.sans, color: c.textMuted },
+          ]}
+        >
+          You can add more versions later
+        </Text>
       </View>
     </SafeAreaView>
   );
 }
-const Styles = StyleSheet.create({
-  topBar: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 20,
-    paddingVertical: 14,
-  },
+
+// ── Styles — layout only, zero color values ───────────────────────────────────
+const styles = StyleSheet.create({
+  topBar: { paddingHorizontal: 20, paddingVertical: 14 },
   backBtn: {
     width: 36,
     height: 36,
     alignItems: "center",
     justifyContent: "center",
   },
-  stepLabel: {
-    fontFamily: "Lora_700Bold",
-    fontSize: 17,
-    color: TEXT_PRIMARY,
-    letterSpacing: 0.2,
-  },
-  progressTrack: {
-    height: 3,
-    backgroundColor: PROGRESS_BG,
-  },
-  progressFill: {
-    width: "100%",
-    height: 3,
-    backgroundColor: DEEP_GREEN,
-    borderRadius: 2,
-  },
-  body: {
-    // backgroundColor: "green"
-  },
+  stepLabel: { fontSize: 17, letterSpacing: 0.2 },
+  skipLabel: { fontSize: 14, marginRight: 3 },
+
+  // FIX 2 — separate track and fill styles
+  progressTrack: { height: 3 },
+  progressFill: { height: 3, width: "100%", borderRadius: 2 },
+
+  scrollContent: { paddingTop: 32 },
   heading: {
-    fontFamily: "Lora_700Bold",
     fontSize: 26,
-    color: TEXT_PRIMARY,
     lineHeight: 34,
     textAlign: "center",
-    marginVertical: 12,
+    marginBottom: 10,
   },
   subtitle: {
-    fontFamily: "Inter_400Regular",
     fontSize: 14,
-    color: "#4A5568",
-    lineHeight: 22,
+    lineHeight: 20,
     textAlign: "center",
-    marginBottom: 32,
+    marginBottom: 28,
   },
+  list: { gap: 12 },
+
   versionCard: {
-    backgroundColor: WHITE,
-    height: 70,
-    marginHorizontal: 15,
-    margin: 8,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: DEEP_GREEN,
-    justifyContent: "center",
-    paddingHorizontal: 20,
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 16,
+    paddingHorizontal: 14,
+    gap: 12,
   },
-  badge: {
-    width: 35,
-    height: 35,
-    backgroundColor: "#C0C8C3",
-    borderRadius: 6,
+
+  abbrBadge: {
+    width: 48,
+    height: 36,
     alignItems: "center",
     justifyContent: "center",
+    flexShrink: 0,
   },
+  abbrText: { fontSize: 13 },
+
+  versionInfo: { flex: 1, gap: 3 },
+  versionName: { fontSize: 15, lineHeight: 21 },
+  versionDesc: { fontSize: 13, lineHeight: 18 },
+
+  radio: {
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    borderWidth: 1.5,
+    alignItems: "center",
+    justifyContent: "center",
+    flexShrink: 0,
+  },
+  radioDot: { width: 8, height: 8, borderRadius: 4 },
+
+  footer: {
+    paddingHorizontal: 24,
+    paddingTop: 16,
+    paddingBottom: Platform.OS === "ios" ? 32 : 20,
+    borderTopWidth: 1,
+    gap: 10,
+    alignItems: "center",
+  },
+  continueLabel: { fontSize: 16 },
+  footerNote: { fontSize: 13 },
 });
