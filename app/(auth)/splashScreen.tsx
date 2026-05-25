@@ -97,7 +97,7 @@ export default function SplashScreen() {
 
       {/* ── App name ───────────────────────────────────────────────────── */}
       <Animated.View style={{ opacity: textOpacity, alignItems: "center" }}>
-        <Text style={styles.appNameWhite}>Scripture</Text>
+        <Text style={styles.appNameWhite}>Logos</Text>
         <Text style={styles.appNameGold}>AI</Text>
       </Animated.View>
 

@@ -157,13 +157,10 @@ export default function Welcome() {
           },
         ]}
       >
-        <ScrollView
-          contentContainerStyle={styles.sheetContent}
-          showsVerticalScrollIndicator={false}
-        >
+        <View style={styles.sheetContent}>
           {/* Heading */}
           <Text style={[styles.heading, { fontFamily: f.bold, color: c.text }]}>
-            Welcome to Scripture AI
+            Welcome to Logos AI
           </Text>
 
           {/* Subtitle */}
@@ -231,36 +228,12 @@ export default function Welcome() {
           {/* CTA button */}
           <AppButton
             label="Get Started"
-            onPress={() => router.push("/(auth)/register")}
+            onPress={() => router.push("/(auth)/Complete")}
             fullWidth
             style={styles.ctaBtn}
           />
-
-          {/* Sign in link */}
-          <View
-            style={[gs.rowCenter, { justifyContent: "center", marginTop: 16 }]}
-          >
-            <Text
-              style={[
-                styles.signinText,
-                { fontFamily: f.sans, color: c.textSecondary },
-              ]}
-            >
-              Already have an account?{"  "}
-            </Text>
-            <Text
-              onPress={() => router.push("/(auth)/login")}
-              style={[
-                styles.signinLink,
-                { fontFamily: f.sansSemi, color: c.primary },
-              ]}
-            >
-              Sign in
-            </Text>
-          </View>
-
-          <View style={{ height: 24 }} />
-        </ScrollView>
+          
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -373,7 +346,7 @@ const styles = StyleSheet.create({
   },
   sheetContent: {
     paddingHorizontal: 24,
-    paddingTop: 32,
+    paddingTop: 12,
   },
 
   // Heading & subtitle
