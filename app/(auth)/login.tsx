@@ -61,7 +61,7 @@ export default function Login() {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
-      router.replace('/(tabs)');
+      router.replace('/(auth)/onboarding');
     }, 1500);
   };
 
@@ -90,7 +90,7 @@ export default function Login() {
             </TouchableOpacity>
 
             <Text style={[styles.headerTitle, { fontFamily: f.bold, color: c.text }]}>
-              Scripture AI
+              Logo AI
             </Text>
 
             <TouchableOpacity style={styles.iconBtn} hitSlop={12}>

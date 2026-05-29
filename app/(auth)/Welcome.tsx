@@ -215,7 +215,7 @@ export default function Welcome() {
                   <Text
                     style={[
                       styles.featureSubtitle,
-                      { fontFamily: f.sans, color: c.textSecondary },
+                      { fontFamily: f.sans, color: c.textSecondary }, 
                     ]}
                   >
                     {feature.subtitle}
